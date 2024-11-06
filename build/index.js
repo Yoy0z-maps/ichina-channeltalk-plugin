@@ -18,6 +18,10 @@ const CHANNEL_TALK_CONFIG = {
                 value: "Accessing to microphone to record voice for video",
             },
         ],
+        POD_CHANNELIO_SDK: `
+pod 'ChannelIOSDK', podspec: 'https://mobile-static.channel.io/ios/latest/xcframework.podspec'
+pod 'RNChannelIO', :path => '../node_modules/react-native-channel-plugin'
+    `,
         INIT_SDK_IMPORT: "#import <ChannelIOFront/ChannelIOFront-swift.h>",
         INIT_SDK_APP: `
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -62,6 +66,12 @@ const withIChinaChnnelTalkNativeConfig = (config) => {
     // iOS Configuration
     console.log("🍎 Applying custom iOS configuration...");
     console.log("---------------------------------------------");
+    console.log("Now Editing Podfile");
+    config = (0, config_plugins_1.withPodfile)(config, (config) => {
+        config.modResults.contents = insertAfter(config.modResults.contents, "config = use_native_modules!", CHANNEL_TALK_CONFIG.IOS.POD_CHANNELIO_SDK);
+        return config;
+    });
+    console.log("✅ Done");
     console.log("Now Editing Info.plist");
     config = (0, config_plugins_1.withInfoPlist)(config, (config) => {
         CHANNEL_TALK_CONFIG.IOS.PRIVACY_SETTINGS.forEach(({ key, value }) => {

@@ -25,6 +25,10 @@ const CHANNEL_TALK_CONFIG = {
         value: "Accessing to microphone to record voice for video",
       },
     ],
+    POD_CHANNELIO_SDK: `
+pod 'ChannelIOSDK', podspec: 'https://mobile-static.channel.io/ios/latest/xcframework.podspec'
+pod 'RNChannelIO', :path => '../node_modules/react-native-channel-plugin'
+    `,
     INIT_SDK_IMPORT: "#import <ChannelIOFront/ChannelIOFront-swift.h>",
     INIT_SDK_APP: `
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -77,6 +81,16 @@ const withIChinaChnnelTalkNativeConfig: ConfigPlugin = (config) => {
   // iOS Configuration
   console.log("🍎 Applying custom iOS configuration...");
   console.log("---------------------------------------------");
+  console.log("Now Editing Podfile");
+  config = withPodfile(config, (config) => {
+    config.modResults.contents = insertAfter(
+      config.modResults.contents,
+      "config = use_native_modules!",
+      CHANNEL_TALK_CONFIG.IOS.POD_CHANNELIO_SDK
+    );
+    return config;
+  });
+  console.log("✅ Done");
 
   console.log("Now Editing Info.plist");
   config = withInfoPlist(config, (config) => {
@@ -87,23 +101,23 @@ const withIChinaChnnelTalkNativeConfig: ConfigPlugin = (config) => {
   });
   console.log("✅ Done");
 
-  //   console.log("Now Editing AppDelegate");
-  //   config = withAppDelegate(config, (config) => {
-  //     config.modResults.contents =
-  //       CHANNEL_TALK_CONFIG.IOS.INIT_SDK_IMPORT +
-  //       "\n" +
-  //       config.modResults.contents;
-  //     config.modResults.contents += CHANNEL_TALK_CONFIG.IOS.INIT_SDK_APP;
-  //     return config;
-  //   });
-  //   console.log("✅ Done");
+  console.log("Now Editing AppDelegate");
+  config = withAppDelegate(config, (config) => {
+    config.modResults.contents =
+      CHANNEL_TALK_CONFIG.IOS.INIT_SDK_IMPORT +
+      "\n" +
+      config.modResults.contents;
+    config.modResults.contents += CHANNEL_TALK_CONFIG.IOS.INIT_SDK_APP;
+    return config;
+  });
+  console.log("✅ Done");
 
-  //   console.log("Now Editing Podfile");
-  //   config = withPodfile(config, (config) => {
-  //     config.modResults.contents += `#Custom Gradle configuration`;
-  //     return config;
-  //   });
-  //   console.log("✅ Done");
+  console.log("Now Editing Podfile");
+  config = withPodfile(config, (config) => {
+    config.modResults.contents += `#Custom Gradle configuration`;
+    return config;
+  });
+  console.log("✅ Done");
 
   console.log();
   console.log();
