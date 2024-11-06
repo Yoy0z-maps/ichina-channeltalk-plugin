@@ -87,23 +87,23 @@ const withIChinaChnnelTalkNativeConfig: ConfigPlugin = (config) => {
   });
   console.log("✅ Done");
 
-  console.log("Now Editing AppDelegate");
-  config = withAppDelegate(config, (config) => {
-    config.modResults.contents =
-      CHANNEL_TALK_CONFIG.IOS.INIT_SDK_IMPORT +
-      "\n" +
-      config.modResults.contents;
-    config.modResults.contents += CHANNEL_TALK_CONFIG.IOS.INIT_SDK_APP;
-    return config;
-  });
-  console.log("✅ Done");
+  //   console.log("Now Editing AppDelegate");
+  //   config = withAppDelegate(config, (config) => {
+  //     config.modResults.contents =
+  //       CHANNEL_TALK_CONFIG.IOS.INIT_SDK_IMPORT +
+  //       "\n" +
+  //       config.modResults.contents;
+  //     config.modResults.contents += CHANNEL_TALK_CONFIG.IOS.INIT_SDK_APP;
+  //     return config;
+  //   });
+  //   console.log("✅ Done");
 
-  console.log("Now Editing Podfile");
-  config = withPodfile(config, (config) => {
-    config.modResults.contents += `#Custom Gradle configuration`;
-    return config;
-  });
-  console.log("✅ Done");
+  //   console.log("Now Editing Podfile");
+  //   config = withPodfile(config, (config) => {
+  //     config.modResults.contents += `#Custom Gradle configuration`;
+  //     return config;
+  //   });
+  //   console.log("✅ Done");
 
   console.log();
   console.log();
