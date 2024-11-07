@@ -19,15 +19,12 @@ const CHANNEL_TALK_CONFIG = {
             },
         ],
         POD_CHANNELIO_SDK: `
-pod 'ChannelIOSDK', podspec: 'https://mobile-static.channel.io/ios/latest/xcframework.podspec'
-pod 'RNChannelIO', :path => '../node_modules/react-native-channel-plugin'
+  pod 'ChannelIOSDK', podspec: 'https://mobile-static.channel.io/ios/latest/xcframework.podspec'
+  pod 'RNChannelIO', :path => '../node_modules/react-native-channel-plugin'
     `,
         INIT_SDK_IMPORT: "#import <ChannelIOFront/ChannelIOFront-swift.h>",
         INIT_SDK_APP: `
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [ChannelIO initialize:application];
-    return YES;
-}
+  [ChannelIO initialize:application];
     `,
     },
     ANDROID: {
@@ -37,10 +34,13 @@ pod 'RNChannelIO', :path => '../node_modules/react-native-channel-plugin'
             name 'ChannelTalk'  
         }
     `,
-        APP_DEPENDENCY: "    implementation 'io.channel:plugin-android'",
+        APP_DEPENDENCY: "    implementation 'androidx.multidex:multidex:2.0.1'\n    implementation 'io.channel:plugin-android'",
         APP_MULTIDEX: "        multiDexEnabled true",
         IMPORT_PACKAGE: `
-import android.support.multidex.MultiDexApplication;
+import com.facebook.react.shell.MainReactPackage
+
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
 import com.zoyi.channel.plugin.android.ChannelIO;
 import com.zoyi.channel.rn.RNChannelIOPackage;
     `,
@@ -50,7 +50,7 @@ import com.zoyi.channel.rn.RNChannelIOPackage;
                     RNChannelIOPackage() // Add ChannelIO Package
                 )
     `,
-        INIT_PACKAGE: "    ChannelIO.initialize(this); // Initialize ChannelIO",
+        INIT_PACKAGE: "    ChannelIO.initialize(this); // Initialize ChannelIO\n    MultiDex.install(this);",
     },
 };
 // Helper function to insert text after a specific line
@@ -82,11 +82,9 @@ const withIChinaChnnelTalkNativeConfig = (config) => {
     console.log("✅ Done");
     console.log("Now Editing AppDelegate");
     config = (0, config_plugins_1.withAppDelegate)(config, (config) => {
-        config.modResults.contents =
-            CHANNEL_TALK_CONFIG.IOS.INIT_SDK_IMPORT +
-                "\n" +
-                config.modResults.contents;
-        config.modResults.contents += CHANNEL_TALK_CONFIG.IOS.INIT_SDK_APP;
+        config.modResults.contents = insertAfter(config.modResults.contents, "#import <React/RCTLinkingManager.h>", CHANNEL_TALK_CONFIG.IOS.INIT_SDK_IMPORT);
+        config.modResults.contents = insertAfter(config.modResults.contents, `- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{`, CHANNEL_TALK_CONFIG.IOS.INIT_SDK_APP);
         return config;
     });
     console.log("✅ Done");
