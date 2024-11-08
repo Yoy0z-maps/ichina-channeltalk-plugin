@@ -28,29 +28,19 @@ const CHANNEL_TALK_CONFIG = {
     `,
     },
     ANDROID: {
-        REPOSITORY: `
+        CHANNEL_TALK_REPOSITORY: `
         maven {  
             url 'https://maven.channel.io/maven2'  
             name 'ChannelTalk'  
-        }
+        }  
     `,
-        APP_DEPENDENCY: "    implementation 'androidx.multidex:multidex:2.0.1'\n    implementation 'io.channel:plugin-android'",
-        APP_MULTIDEX: "        multiDexEnabled true",
-        IMPORT_PACKAGE: `
-import com.facebook.react.shell.MainReactPackage
-
-import androidx.multidex.MultiDex;
-import androidx.multidex.MultiDexApplication;
-import com.zoyi.channel.plugin.android.ChannelIO;
-import com.zoyi.channel.rn.RNChannelIOPackage;
+        MULTIDEX_ENABLE: `
+        multiDexEnabled true
     `,
-        ADD_PACKAGE: `
-                return listOf(
-                    MainReactPackage(),
-                    RNChannelIOPackage() // Add ChannelIO Package
-                )
-    `,
-        INIT_PACKAGE: "    ChannelIO.initialize(this); // Initialize ChannelIO\n    MultiDex.install(this);",
+        IMPORT_MULTIDEX: "import androidx.multidex.MultiDexApplication",
+        IMPORT_CHANNELIO: "import com.zoyi.channel.plugin.android.ChannelIO",
+        EXTENDS_MULTIDEXAPPLICATION: "class MainApplication : MultiDexApplication(), ReactApplication {",
+        INIT_CHANNELIO: "ChannelIO.initialize(this)",
     },
 };
 // Helper function to insert text after a specific line
@@ -59,7 +49,6 @@ const insertAfter = (contents, searchString, newText) => {
     return (contents.slice(0, insertionIndex) +
         "\n" +
         newText +
-        "\n" +
         contents.slice(insertionIndex));
 };
 const withIChinaChnnelTalkNativeConfig = (config) => {
@@ -101,22 +90,21 @@ const withIChinaChnnelTalkNativeConfig = (config) => {
     console.log("---------------------------------------------");
     console.log("Now Editing ./build.gradle");
     config = (0, config_plugins_1.withProjectBuildGradle)(config, (config) => {
-        config.modResults.contents = insertAfter(config.modResults.contents, "repositories {", CHANNEL_TALK_CONFIG.ANDROID.REPOSITORY);
+        config.modResults.contents = insertAfter(config.modResults.contents, "mavenCentral()", CHANNEL_TALK_CONFIG.ANDROID.CHANNEL_TALK_REPOSITORY);
         return config;
     });
     console.log("✅ Done");
     console.log("Now Editing ./app/build.gradle");
     config = (0, config_plugins_1.withAppBuildGradle)(config, (config) => {
-        config.modResults.contents = insertAfter(config.modResults.contents, "dependencies {", CHANNEL_TALK_CONFIG.ANDROID.APP_DEPENDENCY);
-        config.modResults.contents = insertAfter(config.modResults.contents, "defaultConfig {", CHANNEL_TALK_CONFIG.ANDROID.APP_MULTIDEX);
+        config.modResults.contents = insertAfter(config.modResults.contents, 'versionName "1.0.0"', CHANNEL_TALK_CONFIG.ANDROID.MULTIDEX_ENABLE);
         return config;
     });
     console.log("✅ Done");
     console.log("Now Editing MainApplication.java");
     config = (0, config_plugins_1.withMainApplication)(config, (config) => {
-        config.modResults.contents = insertAfter(config.modResults.contents, "import expo.modules.ReactNativeHostWrapper", CHANNEL_TALK_CONFIG.ANDROID.IMPORT_PACKAGE);
-        config.modResults.contents = config.modResults.contents.replace("return PackageList(this).packages", CHANNEL_TALK_CONFIG.ANDROID.ADD_PACKAGE);
-        config.modResults.contents = insertAfter(config.modResults.contents, "super.onCreate()", CHANNEL_TALK_CONFIG.ANDROID.INIT_PACKAGE);
+        config.modResults.contents = config.modResults.contents.replace("import android.app.Application", CHANNEL_TALK_CONFIG.ANDROID.IMPORT_MULTIDEX);
+        config.modResults.contents = config.modResults.contents.replace("class MainApplication : Application(), ReactApplication {", CHANNEL_TALK_CONFIG.ANDROID.EXTENDS_MULTIDEXAPPLICATION);
+        config.modResults.contents = insertAfter(config.modResults.contents, "SoLoader.init(this, false)", CHANNEL_TALK_CONFIG.ANDROID.INIT_CHANNELIO);
         return config;
     });
     console.log("✅ Done");
