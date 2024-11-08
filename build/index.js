@@ -103,6 +103,7 @@ const withIChinaChnnelTalkNativeConfig = (config) => {
     console.log("Now Editing MainApplication.java");
     config = (0, config_plugins_1.withMainApplication)(config, (config) => {
         config.modResults.contents = config.modResults.contents.replace("import android.app.Application", CHANNEL_TALK_CONFIG.ANDROID.IMPORT_MULTIDEX);
+        config.modResults.contents = insertAfter(config.modResults.contents, "import expo.modules.ReactNativeHostWrapper", CHANNEL_TALK_CONFIG.ANDROID.IMPORT_CHANNELIO);
         config.modResults.contents = config.modResults.contents.replace("class MainApplication : Application(), ReactApplication {", CHANNEL_TALK_CONFIG.ANDROID.EXTENDS_MULTIDEXAPPLICATION);
         config.modResults.contents = insertAfter(config.modResults.contents, "SoLoader.init(this, false)", CHANNEL_TALK_CONFIG.ANDROID.INIT_CHANNELIO);
         return config;
