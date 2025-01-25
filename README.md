@@ -9,3 +9,12 @@ npm i ichina-channeltalk-plugin
 https://developers.channel.io/reference/react-native-quickstart-kr
 https://docs.expo.dev/modules/config-plugin-and-native-module-tutorial/
 https://docs.expo.dev/config-plugins/plugins-and-mods/
+
+# 버전 업데이트
+
+2.0.1 채널톡 플러그인 안드로이드, iOS 지원
+2.1.1 안드로이드 위쳇 딥링크 지원
+
+```
+npm version patch
+```

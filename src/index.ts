@@ -6,6 +6,7 @@ import {
   withMainApplication,
   withPodfile,
   withAppDelegate,
+  withAndroidManifest,
 } from "@expo/config-plugins";
 
 // Constants for ChannelIO Configuration
@@ -167,6 +168,37 @@ const withIChinaChnnelTalkNativeConfig: ConfigPlugin = (config) => {
       "SoLoader.init(this, false)",
       CHANNEL_TALK_CONFIG.ANDROID.INIT_CHANNELIO
     );
+    return config;
+  });
+  console.log("Now Editing AndroidManifest.xml");
+  config = withAndroidManifest(config, async (config) => {
+    const manifest = config.modResults;
+    const mainActivity = manifest?.manifest?.application?.[0]?.activity?.find(
+      (activity) => activity["$"]["android:name"] === ".MainActivity"
+    );
+
+    if (mainActivity) {
+      const intentFilter = mainActivity["intent-filter"]?.find((filter) =>
+        filter.action?.some(
+          (action) =>
+            action["$"]["android:name"] === "android.intent.action.VIEW"
+        )
+      );
+
+      if (intentFilter) {
+        const existingSchemes = intentFilter?.data?.map(
+          (data) => data["$"]["android:scheme"]
+        );
+        if (!existingSchemes?.includes("weixin")) {
+          intentFilter.data?.push({
+            $: {
+              "android:scheme": "weixin",
+            },
+          });
+        }
+      }
+    }
+
     return config;
   });
   console.log("✅ Done");
